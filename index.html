@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Interaktiv Test</title>
+<title>Tarix Test</title>
 
 <style>
 body{font-family:Arial;background:#f2f2f2;margin:0;padding:20px}
@@ -14,8 +14,6 @@ button{padding:10px 15px;margin:5px;border:none;border-radius:8px;cursor:pointer
 .pause{background:orange;color:#fff}
 .question{display:none;margin-top:20px}
 #timer{font-size:22px;color:red;font-weight:bold;display:none;margin:10px 0}
-.correct{color:green}
-.wrong{color:red}
 </style>
 </head>
 
@@ -23,7 +21,7 @@ button{padding:10px 15px;margin:5px;border:none;border-radius:8px;cursor:pointer
 
 <div class="container">
 
-<h2>INTERAKTIV TEST</h2>
+<h2>TARIX TEST</h2>
 
 <div id="menu">
 <button class="start" onclick="loadPart(1)">Test 1 (1–44)</button>
@@ -45,12 +43,7 @@ button{padding:10px 15px;margin:5px;border:none;border-radius:8px;cursor:pointer
 
 <script>
 
-/* =======================
-   221 TA SAVOL
-   (SENIKI TO‘LIQ BO‘LADI)
-======================= */
 const questions = [
-
 
   {q:"1. Islom Karimovning “O’zbekiston mustaqillikka erishish ostonasida” asari nechanchi yillar voqealarini o’z ichiga oladi?", options:["1985-1988-yillar","1989-1992-yillar","1991-1995-yillar"], correct:[1]},
   {q:"2. Milliy mustaqillikning ikkinchi davri hisoblangan Milliy yuksalish davri nechanchi boshlanadi?", options:["2015-yildan","2017-yildan","2019-yildan"], correct:[1]},
@@ -428,22 +421,16 @@ const questions = [
   }
 ];
 
-
-/* =======================
-   LOGIKA
-======================= */
-
 let selectedQuestions = [];
 let current = 0;
 let score = 0;
 let timer;
 let time = 4800;
 let answered = [];
-let paused = false;
 
 const container = document.getElementById("questions");
 
-/* ===== 5 BO‘LIM ===== */
+/* ===== BO‘LIM ===== */
 function loadPart(part){
 
     if(part === 1) selectedQuestions = questions.slice(0,44);
@@ -505,7 +492,7 @@ function start(){
     },1000);
 }
 
-/* ===== ANSWER ===== */
+/* ===== JAVOB ===== */
 container.addEventListener("change",(e)=>{
     let divs = document.querySelectorAll(".question");
     let index = [...divs].indexOf(e.target.closest(".question"));
@@ -516,27 +503,29 @@ container.addEventListener("change",(e)=>{
 
     if(val === selectedQuestions[index].correct[0]){
         score++;
-        feedback.innerHTML = "✅ To‘g‘ri";
+        document.getElementById("feedback").innerHTML = "✅ To‘g‘ri";
     }else{
-        feedback.innerHTML = "❌ Noto‘g‘ri";
+        document.getElementById("feedback").innerHTML = "❌ Noto‘g‘ri";
     }
 
     answered[index]=true;
 
     setTimeout(()=>{
-        feedback.innerHTML="";
+        document.getElementById("feedback").innerHTML="";
         next();
     },500);
 });
 
 /* ===== NEXT ===== */
+let currentDiv = 0;
+
 function next(){
     let divs = document.querySelectorAll(".question");
-    divs[current].style.display="none";
-    current++;
+    divs[currentDiv].style.display="none";
+    currentDiv++;
 
-    if(current<divs.length){
-        divs[current].style.display="block";
+    if(currentDiv<divs.length){
+        divs[currentDiv].style.display="block";
     }else{
         finish();
     }
@@ -561,6 +550,21 @@ function finish(){
         <button onclick="location.reload()">Qayta boshlash</button>
     `;
 }
+
+/* ===== CHIQISH (MENYUGA QAYTISH) ===== */
+document.getElementById("exitBtn").addEventListener("click", () => {
+    clearInterval(timer);
+
+    document.getElementById("menu").style.display = "block";
+    document.getElementById("questions").innerHTML = "";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("pauseBtn").style.display = "none";
+    document.getElementById("exitBtn").style.display = "none";
+    document.getElementById("result").innerHTML = "";
+    document.getElementById("feedback").innerHTML = "";
+
+    currentDiv = 0;
+});
 
 </script>
 
