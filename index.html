@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Interaktiv Test</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f2f2f2;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,.2);
+}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.start{
+    background:#007bff;
+    color:white;
+}
+
+.exit{
+    background:red;
+    color:white;
+}
+
+.pause{
+    background:orange;
+    color:white;
+}
+
+.question{
+    display:none;
+    margin-top:20px;
+}
+
+#timer{
+    font-size:22px;
+    color:red;
+    font-weight:bold;
+    margin:15px 0;
+    display:none;
+}
+
+.correct{
+    color:green;
+    font-weight:bold;
+}
+
+.wrong{
+    color:red;
+    font-weight:bold;
+}
+
+#feedback{
+    font-size:20px;
+    margin:10px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>Interaktiv Test</h2>
+
+<div id="menu">
+    <button class="start" onclick="loadPart(1)">Test 1 (1-50)</button>
+    <button class="start" onclick="loadPart(2)">Test 2 (51-100)</button>
+    <button class="start" onclick="loadPart(3)">Test 3 (101-150)</button>
+    <button class="start" onclick="loadPart(4)">Test 4 (151-195)</button>
+</div>
+
+<div>
+    <button id="pauseBtn" class="pause" style="display:none">
+        ⏸ To'xtatish
+    </button>
+
+    <button id="exitBtn" class="exit" style="display:none">
+        ❌ Chiqish
+    </button>
+</div>
+
+<div id="timer">80:00</div>
+
+<div id="feedback"></div>
+
+<div id="questions"></div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+/* BU YERGA 195 TA SAVOLNI JOYLAYSIZ */
+
+const questions = [
+
+  {q:"1. Islom Karimovning “O’zbekiston mustaqillikka erishish ostonasida” asari nechanchi yillar voqealarini o’z ichiga oladi?", options:["1985-1988-yillar","1989-1992-yillar","1991-1995-yillar"], correct:[1]},
+  {q:"2. Milliy mustaqillikning ikkinchi davri hisoblangan Milliy yuksalish davri nechanchi boshlanadi?", options:["2015-yildan","2017-yildan","2019-yildan"], correct:[1]},
+  {q:"3. Ushbu fikr muallifi kim? (tarixni bilish haqida)", options:["Abdurauf Fitrat","Alisher Navoiy","Behbudiy"], correct:[0]},
+  {q:"4. Tarixdan ibrat olish haqida fikr muallifi kim?", options:["Abdulla Avloniy","Mahmudxo’ja Behbudiy","Fitrat"], correct:[1]},
+  {q:"5. Tarix millatning joni-ruhi degan fikr muallifi kim?", options:["Nushiravon Yovushev","Cho‘lpon","Fitrat"], correct:[0]},
+  {q:"6. “Yer yuzining sayqali” qaysi shahar?", options:["Buxoro","Samarqand","Xiva"], correct:[1]},
+  {q:"7. 1985-yilda paxta maydonlari qancha edi?", options:["1989,8 ming gektar","2054,0 ming gektar","1800 ming gektar"], correct:[0]},
+  {q:"8. 1986-yilda paxta maydonlari qancha yetkazildi?", options:["1800 ming gektar","2054,0 ming gektar","2100 ming gektar"], correct:[1]},
+  {q:"9. Orol dengizi qachon ikkita ko‘lga ajralgan?", options:["1987-yil","1989-yil","1991-yil"], correct:[1]},
+  {q:"10. Qishloq aholisi gaz bilan ta’minlanish darajasi?", options:["25%","17%","30%"], correct:[1]},
+
+  {q:"11. Qaysi biri ilmiy usulga kirmaydi?", options:["Ilmiy xolislik","Din va dunyoviylik muvozanati","Tarixiylik"], correct:[1]},
+  {q:"12. Jamoatchilik kengashi qachon tuzildi?", options:["2016-yil 30-iyun","2017-yil 30-iyun","2018-yil 30-iyun"], correct:[1]},
+  {q:"13. Ustoz va murabbiylar kuni qachondan?", options:["1995-yil","1997-yil","2000-yil"], correct:[1]},
+  {q:"14. Sovet davri yillari?", options:["1917-1991","1918-1990","1920-1991"], correct:[0]},
+  {q:"15. Paxta ishi bo‘yicha rahbarlar soni?", options:["400","600","800"], correct:[1]},
+
+  {q:"16. Sotsialistik mehnat qahramonlari?", options:["5","10","15"], correct:[1]},
+  {q:"17. 1991 referendum nima haqida edi?", options:["Konstitutsiya","Mustaqillikni ma’qullash","Saylov"], correct:[1]},
+  {q:"18. Mustaqillikni birinchi tan olganlar?", options:["Turkiya va Yaponiya","Rossiya va Xitoy","AQSH va Germaniya"], correct:[0]},
+  {q:"19. Karimov 80 yilligi qarori qachon?", options:["2016-yil","2017-yil 27-noyabr","2018-yil"], correct:[1]},
+  {q:"20. Konstitutsiyaning birinchi tamoyili?", options:["Suverenitet","Inson huquqlari","Demokratiya"], correct:[0]},
+
+  {q:"21. Noto‘g‘ri javob?", options:["12 qirrali yulduz bor","Gerbda quyosh bor","Gerbda oy bor"], correct:[0]},
+  {q:"22. Milliy tiklanish davri?", options:["2016-2017","2017-hozirgacha","1991-2016"], correct:[1]},
+  {q:"23. Mashina qayerda ishlab chiqarilgan?", options:["O‘zismash","Toshkent zavodi","Farg‘ona zavodi"], correct:[0]},
+  {q:"24. Kamolot qachon o‘zgartirildi?", options:["2016","2017-30-iyun","2018"], correct:[1]},
+  {q:"25. Al-Farg‘oniy 1200 yilligi?", options:["1998","2000","1995"], correct:[0]},
+
+  {q:"26. Temuriylar muzeyi qachon?", options:["1996 Toshkent","1995 Samarqand","1997 Buxoro"], correct:[0]},
+  {q:"27. Al-Marg‘iloniy yubileyi?", options:["1999","2000","2001"], correct:[1]},
+  {q:"28. Ta’lim qonuni qachon?", options:["1991","1992-2-iyul","1993"], correct:[1]},
+  {q:"29. Kadrlar dasturi qachon?", options:["1997","1998","1999"], correct:[0]},
+  {q:"30. Yangi ta’lim farqi?", options:["6 yosh","7 yosh","8 yosh"], correct:[1]},
+
+  {q:"31. 2018 diplomatik davlatlar soni?", options:["120","134","150"], correct:[1]},
+  {q:"32. SHHT nomi qachon?", options:["2000","2001","2002"], correct:[1]},
+  {q:"33. 2019 O‘zbekiston yili qayerda?", options:["Qozog‘iston","Rossiya","Turkiya"], correct:[0]},
+
+  {q:"45. Quyidagi asarlardan qaysi biri Ahmad Al Farg’oniy qalamiga mansub?", options:["Samoviy harakatlar va ilmu nujum","Al-jabr","Qutadg’u bilig"], correct:[0]},
+  {q:"46. Quyidagi voqealardan qaysi biri 2020-yilda sodir bo‘lgan?", options:["Ta’lim to’g’risidagi yangi qonun","Konstitutsiya qabul qilindi","SHHT tashkil etildi"], correct:[0]},
+  {q:"47. O’zbekiston qachon BMTga a’zo bo‘ldi?", options:["1991-yil 2-mart","1992-yil 2-mart","1993-yil 2-mart"], correct:[1]},
+  {q:"48. Qaysi biri Farg’ona voqeasining sababiga kirmaydi?", options:["Ijtimoiy muammolar","Orol fojeasi","Mehnat nizolari"], correct:[1]},
+  {q:"49. 2025-yilda O’zbekiston qancha paxta yetishtirdi?", options:["2 mln tonna","3 mln 765 ming tonna","4 mln tonna"], correct:[1]},
+
+  {q:"50. Markaziy Osiyodagi gaz zahiralarining necha foizi O’zbekistonda?", options:["50%","60%","70%"], correct:[2]},
+  {q:"51. Asakadagi avtomobil zavodida 1996-yilda qaysi avtomobillar ishlab chiqarilgan?", options:["Nexia, Tico, Damas","Lacetti, Spark","Cobalt, Malibu"], correct:[0]},
+  {q:"52. 2019-yilda “Obod qishloq” dasturiga qancha mablag‘ ajratildi?", options:["5,1 trillion so‘m","6,1 trillion so‘m","7,1 trillion so‘m"], correct:[1]},
+  {q:"53. SamKochAvto qachon ishga tushirildi?", options:["1998-yil","1999-yil","2000-yil"], correct:[1]},
+  {q:"54. 1996-yilda qaysi voqea sodir bo‘lgan?", options:["Amir Temur 660 yilligi","Mustaqillik 10 yilligi","Konstitutsiya 5 yilligi"], correct:[0]},
+
+  {q:"55. Mustaqillik yillarida ishga tushirilgan korxona?", options:["Zarafshon Nyumont","Toshkent traktor zavodi","Farg‘ona NQZ"], correct:[0]},
+  {q:"56. 1989 Farg‘ona voqeasi paytida 1-kotib kim edi?", options:["Rafiq Nishonov","Islom Karimov","Sharof Rashidov"], correct:[0]},
+  {q:"57. 1988-yilda Toshkentda nechta OTM bor edi?", options:["15 ta","19 ta","22 ta"], correct:[1]},
+  {q:"58. Navro‘z bayrami qachon bekor qilindi?", options:["1985-yil","1986-yil","1987-yil"], correct:[1]},
+  {q:"59. 1991 referendum natijasi?", options:["95,2%","98,2%","99,2%"], correct:[1]},
+
+  {q:"60. Paxta ishi bo‘yicha vazir kim edi?", options:["Usmonov","Rahimov","Karimov"], correct:[0]},
+  {q:"61. 2017-yil qanday yil deb e’lon qilindi?", options:["Yoshlar yili","Xalq bilan muloqot va inson manfaatlari yili","Taraqqiyot yili"], correct:[1]},
+  {q:"62. 2018-yilda Economist bo‘yicha yil odami?", options:["Donald Trump","Jurnalistlar","Ilon Musk"], correct:[1]},
+  {q:"63. “Jorulloh” nisbati kimga berilgan?", options:["Alisher Navoiy","Mahmud az Zamaxshariy","Beruniy"], correct:[1]},
+  {q:"64. Imom Buxoriy nechta hadis kiritgan?", options:["7275 ta","6000 ta","8000 ta"], correct:[0]},
+
+  {q:"65. 1992-yilda qaysi voqea sodir bo‘lgan?", options:["Viloyatlarga hokim tayinlash","Konstitutsiya qabul qilish","BMTga a’zolik"], correct:[0]},
+  {q:"66. Transparency International 2017 reytingi?", options:["150-o‘rin","157-o‘rin","160-o‘rin"], correct:[1]},
+  {q:"67. Shohi Zinda eshiklari nimadan yasalgan?", options:["Yog‘och","Tosh","Temir"], correct:[0]},
+  {q:"68. Shayboniyxon pul islohoti qachon?", options:["1505-yil","1507-yil","1510-yil"], correct:[1]},
+  {q:"69. Suv ayirg‘ich qachon qurilgan?", options:["1502-yil","1504-yil","1506-yil"], correct:[0]},
+
+  {q:"70. Sharq taronalari ilk bor qachon o‘tkazildi?", options:["1995-yil","1997-yil","1999-yil"], correct:[1]},
+  {q:"71. Korrupsiyaga qarshi qonun qachon qabul qilindi?", options:["2016-yil","2017-yil 3-yanvar","2018-yil"], correct:[1]},
+  {q:"72. Islom universiteti qayerda ochilgan?", options:["Samarqand","Toshkent","Buxoro"], correct:[1]},
+  {q:"73. Taraqqiyot strategiyasi nechta yo‘nalishdan iborat?", options:["5 va 70","7 va 100","8 va 120"], correct:[1]},
+  {q:"74. Qaysi biri siyosiy partiyaga kirmaydi?", options:["Diniy tashkilot tuzish","Saylovlarda qatnashish","Qonun ishlab chiqish"], correct:[0]},
+
+  {q:"75. Sherdor va Tillakori kim tomonidan qurilgan?", options:["Yalangto‘sh Bahodir","Amir Temur","Ulug‘bek"], correct:[0]},
+  {q:"76. O‘qituvchilar oyligi necha barobar oshdi?", options:["2 barobar","2,5 barobar","3 barobar"], correct:[1]},
+  {q:"77. Islom Karimov haykali qayerlarda o‘rnatilgan?", options:["Toshkent, Samarqand, Qarshi","Toshkent, Buxoro","Farg‘ona, Andijon"], correct:[0]},
+  {q:"78. Amir Temur barpo etmagan bog‘ qaysi?", options:["Bog‘i Dilkusho","Xo‘ja Ilg‘or bog‘i","Bog‘i Chinor"], correct:[1]},
+
+{q:"79. Transparency International hisobotiga ko‘ra O‘zbekiston 2017-yilda korrupsiyaga qarshi kurashda nechanchi o‘rinni egalladi?", options:["150-o‘rin","157-o‘rin","160-o‘rin"], correct:[1]},
+  {q:"80. 1863-yilda Samarqand qog‘oziga baho bergan sayyoh kim edi?", options:["Herman Vamberi","Marco Polo","Ibn Battuta"], correct:[0]},
+  {q:"81. 1868-yilda Buxoro amiri kim edi?", options:["Amir Muzaffar","Amir Olimxon","Amir Nasrullo"], correct:[0]},
+  {q:"82. Ko‘chkunchixon Samarqandni necha yil boshqardi?", options:["15 yil","18 yil","20 yil"], correct:[1]},
+  {q:"83. Savol to‘liq emas", options:["Abdulla","Abdulatifdan keyin boshqa hukmdor","Ulug‘bek"], correct:[1]},
+
+  {q:"84. Bobur Samarqand taxtini kimning yordamida egalladi?", options:["Eron shohi Ismoil Safaviy","Usmonli sultoni","Shayboniyxon"], correct:[0]},
+  {q:"85. Shayboniyxon kim bilan jangda vafot etdi?", options:["Ismoil Safaviy","Bobur","Ulug‘bek"], correct:[0]},
+  {q:"86. Mirzo Ulug‘bek 1417-yilda qayerda madrasa qurdirgan?", options:["Buxoro","G‘ijduvon","Samarqand"], correct:[1]},
+  {q:"87. “O‘zbek tom ma’noda bunyodkordir” fikri kimga tegishli?", options:["Islom Karimov","Alisher Navoiy","Fitrat"], correct:[0]},
+  {q:"88. Amir Temur qurdirmagan bog‘?", options:["Xo‘ja Ilg‘or","Bog‘i Dilkusho","Bog‘i Chinor"], correct:[0]},
+
+  {q:"89. Ko‘ksaroy va Bo‘stonsaroy necha qavatli?", options:["3 qavatli","4 qavatli","5 qavatli"], correct:[1]},
+  {q:"90. Massagetlar malikasi kim edi?", options:["To‘maris","Zarina","Tomiris"], correct:[0]},
+  {q:"91. Mustaqillik arafasida O‘zbekiston YIM bo‘yicha nechanchi o‘rinda edi?", options:["10-o‘rin","12-o‘rin","15-o‘rin"], correct:[1]},
+  {q:"92. Qaysi millat? (Behbudiy savoli)", options:["O‘zbek","Arab","Fors"], correct:[0]},
+  {q:"93. Mirziyoyev 2018-yilda nechta davlatga bordi?", options:["10 ta","16 ta","20 ta"], correct:[1]},
+
+  {q:"94. “O‘zbekiston kelajagi buyuk davlat” kimga tegishli?", options:["Islom Karimov","Shavkat Mirziyoyev","Navoiy"], correct:[0]},
+  {q:"95. MDH qachon tuzildi?", options:["1991-yil 8-dekabr","1992-yil","1990-yil"], correct:[0]},
+  {q:"96. Islom Karimov BMTda ilk nutqini qachon so‘zladi?", options:["1992","1993","1994"], correct:[1]},
+  {q:"97. O‘zbekiston MDHga qachon a’zo bo‘ldi?", options:["1991-yil 21-dekabr","1992-yil","1993-yil"], correct:[0]},
+  {q:"98. Ichki ishlar vazirligi O‘zbekistonga qachon o‘tkazildi?", options:["1991-yil 25-avgust","1990-yil","1992-yil"], correct:[0]},
+
+  {q:"99. 2015-yilgacha O‘zbekistonni nechta davlat tan oldi?", options:["150 dan ortiq","180 dan ortiq","200 dan ortiq"], correct:[1]},
+  {q:"100. Oliy ta’lim qarori qachon qabul qilindi?", options:["2017-yil 20-aprel","2017-yil 21-aprel","2018-yil"], correct:[1]},
+  {q:"101. Diniy tashkilotlar soni?", options:["1000 dan ortiq","2200 dan ortiq","3000 dan ortiq"], correct:[1]},
+  {q:"102. Markaziy Osiyodagi ilk islom universiteti?", options:["1999 Toshkent","2000 Samarqand","1998 Buxoro"], correct:[0]},
+  {q:"103. Plyonka ostiga ekish qayerda boshlangan?", options:["Andijon","Farg‘ona","Namangan"], correct:[0]},
+
+  {q:"104. O‘qituvchilar maoshi oshishi?", options:["2 barobar","2,5 barobar","3 barobar"], correct:[1]},
+  {q:"105. Shahidlar xotirasi qayerda?", options:["Toshkent","Samarqand","Buxoro"], correct:[0]},
+  {q:"106. 1996-yilda avtomobil ishlab chiqaruvchi o‘rin?", options:["25-o‘rin","28-o‘rin","30-o‘rin"], correct:[1]},
+  {q:"107. 2021-yil nomi?", options:["Yoshlar yili","Inson qadrini ulug‘lash yili","Taraqqiyot yili"], correct:[1]},
+  {q:"108. O‘zbekiston oltin bo‘yicha?", options:["10-o‘rin","12-o‘rin","15-o‘rin"], correct:[1]},
+
+  {q:"109. Onix ishlab chiqarish qachon boshlandi?", options:["2022","2023","2024"], correct:[1]},
+  {q:"110. O‘zbekdavlatsirk qachon tuzildi?", options:["1995","1996","1997"], correct:[1]},
+  {q:"111. Sudlar to‘g‘risidagi qonun?", options:["1993","1995","1997"], correct:[2]},
+  {q:"112. Vijdon erkinligi qonuni?", options:["1991","1992","1993"], correct:[1]},
+  {q:"113. 1992 voqea?", options:["Hokimlar tayinlandi","Konstitutsiya qabul qilindi","MDH"], correct:[0]},
+
+  {q:"114. Sherdor va Tillakori kim tomonidan qurilgan?", options:["Yalangto‘sh Bahodir","Ulug‘bek","Navoiy"], correct:[0]},
+  {q:"115. Shayboniyxon pul islohoti?", options:["1505","1507","1510"], correct:[1]},
+  {q:"116. Taraqqiyot strategiyasi?", options:["7 yo‘nalish 100 maqsad","5 yo‘nalish 80 maqsad","10 yo‘nalish 120 maqsad"], correct:[0]},
+  {q:"117. Deputatlar soni 150 taga qachon yetkazildi?", options:["2007","2008","2009"], correct:[1]},
+  {q:"118. Gerb ranglari?", options:["Tillarang","Qizil","Ko‘k"], correct:[0]},
+
+  {q:"119. Siyosiy partiyalar vakolatiga kirmaydi?", options:["Diniy tashkilot tuzish","Saylovda qatnashish","Qonun yaratish"], correct:[0]},
+  {q:"120. Shahrisabz qachon UNESCO ro‘yxatiga kiritildi?", options:["2001","2002","2003"], correct:[1]},
+  {q:"121. Deputat bo‘lish yoshi (Oliy Majlis)?", options:["25","21","18"], correct:[0]},
+  {q:"122. Viloyat kengashi yoshi?", options:["18","21","25"], correct:[1]},
+  {q:"123. Haykal qayerlarda bor?", options:["Toshkent, Samarqand, Qarshi","Buxoro, Xiva","Farg‘ona"], correct:[0]},
+
+ {q:"124. Orol dengizidagi suv sathi qancha pasaygan?", options:["12,5 m","14,5 m","16 m"], correct:[1]},
+
+{q:"125. Qaysi voqea Islom Karimov davrida sodir bo‘lgan?", options:["Taraqqiyotning o‘zbek modeli qabul qilindi","MDH tuzildi","BMTga a’zo bo‘ldi"], correct:[0]},
+  {q:"126. Qonun chiqaruvchi hokimiyat?", options:["Oliy Majlis","Vazirlar Mahkamasi","Sud hokimiyati"], correct:[0]},
+  {q:"127. Paxta ishi tergovchilari kimlar edi?", options:["Gdlyan va Ivanov","Putin va Medvedev","Karimov va Nishonov"], correct:[0]},
+  {q:"128. Yagona Tarbiya faniga birlashtirilgan fanlar?", options:["Milliy g‘oya va odobnoma","Matematika va fizika","Biologiya va kimyo"], correct:[0]},
+  {q:"129. Kadrlar tayyorlash milliy dasturi qachon?", options:["1996","1997","1998"], correct:[1]},
+
+  {q:"130. Ramazon va Qurbon hayiti dam olish bo‘lgan yil?", options:["1991","1992","1993"], correct:[1]},
+  {q:"131. 5 tashabbus 1-yo‘nalish?", options:["San’at","Yoshlarning musiqa va san’atga qiziqishi","Sport"], correct:[1]},
+  {q:"132. 5 tashabbus 2-yo‘nalish?", options:["Kitobxonlikni oshirish","Kompyuter o‘yinlari","Sport o‘yinlari"], correct:[0]},
+  {q:"133. 5 tashabbus 3-yo‘nalish?", options:["Jismoniy tarbiya","Internetdan foydalanish","Televideniye"], correct:[0]},
+  {q:"134. 5 tashabbus 4-yo‘nalish?", options:["Yoshlar bandligi","Teatr","Transport"], correct:[0]},
+
+  {q:"135. 5 tashabbus 5-yo‘nalish?", options:["Xotin-qizlar bandligi","Uy-joy","Savdo"], correct:[0]},
+  {q:"136. O‘zbek modelining 1-tamoyili?", options:["Iqtisodiy ustuvorlik","Ijtimoiy adolat","Qonun ustuvorligi"], correct:[2]},
+  {q:"137. 2-tamoyil?", options:["Davlat bosh islohotchi","Erkinlik","Madaniyat"], correct:[0]},
+  {q:"138. 3-tamoyil?", options:["Qonun ustuvorligi","Sport","Ta’lim"], correct:[0]},
+  {q:"139. 4-tamoyil?", options:["Kuchli ijtimoiy siyosat","Siyosat","Fan"], correct:[0]},
+
+  {q:"140. 5-tamoyil?", options:["Bozor iqtisodiyotiga o‘tish","Transport","Savdo"], correct:[0]},
+  {q:"141. 1-ustuvor yo‘nalish?", options:["Davlat va jamiyat qurilishi","Madaniyat","Sport"], correct:[0]},
+  {q:"142. 2-ustuvor yo‘nalish?", options:["Qonun ustuvorligi","Oila","San’at"], correct:[0]},
+  {q:"143. 3-ustuvor yo‘nalish?", options:["Iqtisodiy rivojlanish","Kitob","Televideniye"], correct:[0]},
+  {q:"144. 4-ustuvor yo‘nalish?", options:["Ijtimoiy rivojlanish","Transport","Oziq-ovqat"], correct:[0]},
+
+  {q:"145. 5-ustuvor yo‘nalish?", options:["Xavfsizlik va tashqi siyosat","Sport","Ta’lim"], correct:[0]},
+  {q:"146. Karimov ilk rasmiy safar?", options:["Hindiston","Rossiya","AQSH"], correct:[0]},
+  {q:"147. Samarqand 2750 yilligi?", options:["2006","2007","2008"], correct:[1]},
+  {q:"148. Toshkent 2200 yilligi?", options:["2008","2009","2010"], correct:[1]},
+  {q:"149. Buxoro 2500 yilligi?", options:["1996","1997","1998"], correct:[1]},
+
+  {q:"150. Ahmad al-Farg‘oniy haykali qayerda?", options:["Qohira","Istanbul","Bag‘dod"], correct:[0]},
+  {q:"151. Amir Temur yili e’lon qilingan yil?", options:["1995","1996","1997"], correct:[1]},
+  {q:"152. Navoiy 550 yilligi?", options:["1990","1991","1992"], correct:[1]},
+  {q:"153. Bobur 510 yilligi?", options:["1992","1993","1994"], correct:[1]},
+  {q:"154. Cho‘lpon 100 yilligi?", options:["1997","1998","1999"], correct:[0]},
+
+  {q:"155. Alpomish 1000 yilligi?", options:["1998","1999","2000"], correct:[1]},
+  {q:"156. Yoshlar kuni qachon?", options:["1-iyul","30-iyun","1-avgust"], correct:[1]},
+  {q:"157. 2017 yil nomi?", options:["Xalq bilan muloqot va inson manfaatlari yili","Yoshlar yili","Ta’lim yili"], correct:[0]},
+  {q:"158. 2019 yil nomi?", options:["Faol investitsiyalar va ijtimoiy rivojlanish yili","Yoshlar yili","Sport yili"], correct:[0]},
+  {q:"159. Sho‘rtan gaz kimyo hamkorligi?", options:["ABB Lummus Global","Samsung","Toyota"], correct:[0]},
+
+  {q:"160. Paxta terish mashinasi turi?", options:["Gorizontal shpindelli","Vertikal shpindelli","Elektrli"], correct:[0]},
+  {q:"161. So‘m-kupon qachon?", options:["1992","1993-1-noyabr","1994"], correct:[1]},
+  {q:"162. So‘m qachon muomalaga kiritildi?", options:["1994-1-iyul","1993","1995"], correct:[0]},
+  {q:"163. 1000 so‘m banknota qachon?", options:["2000","2001","2002"], correct:[1]},
+  {q:"164. Ijro etuvchi hokimiyat?", options:["Vazirlar Mahkamasi","Oliy Majlis","Sud"], correct:[0]},
+
+  {q:"165. O‘lim jazosi qachon bekor qilindi?", options:["2008-1-sentabr","2007","2009"], correct:[0]},
+  {q:"166. “Partiya” ma’nosi?", options:["Ajratish","Birlashish","Yig‘ilish"], correct:[0]},
+  {q:"167. Eng oxirgi tashkil etilgan partiya?", options:["Ekologik partiya","Liberal partiya","Adolat"], correct:[0]},
+  {q:"168. Oxirgi tashkil etilgan partiya (davriy)?", options:["XDP","Ekologik partiya","Milliy tiklanish"], correct:[1]},
+  {q:"169. Bayroq qachon qabul qilingan?", options:["1991-18-noyabr","1992","1990"], correct:[0]},
+
+  {q:"170. Gerb qachon qabul qilingan?", options:["1992-2-iyul","1991","1993"], correct:[0]},
+  {q:"171. Madhiya qachon qabul qilingan?", options:["1992-10-dekabr","1991","1993"], correct:[0]},
+  {q:"172. NNTlar soni?", options:["5000","10000+","15000"], correct:[1]},
+ {q:"173. Konstitutsiya komissiyasi nechta a’zodan iborat edi?", options:["50","64","70"], correct:[1]},
+
+{q:"174. Taraqqiyotning o’zbek modeli Islom Karimovning qaysi asarida asoslab berildi?",
+ options:[
+   "O’zbekiston bozor munosabatlariga o’tishning o’ziga xos yo’li",
+   "Tarixiy xotirasiz kelajak yo’q",
+   "O’zbekiston mustaqillikka erishish ostonasida"
+ ],
+ correct:[0]},
+
+  {q:"175. Islom Karimovning “O’zbekiston bozor munosabatlariga o’tishning o’ziga xos yo’li” asari nechanchi yilda nashr etildi?",
+   options:["1991-yil","1993-yil","1995-yil"], correct:[1]},
+
+  {q:"176. Islom Karimovning “O’zbekiston o’z istiqlol va taraqqiyot yo’li” asari nechanchi yilda nashr etildi?",
+   options:["1992-yil","1990-yil","1994-yil"], correct:[0]},
+
+  {q:"177. Islom Karimovning “Tarixiy xotirasiz kelajak yo’q” asari nechanchi yilda nashr etildi?",
+   options:["1998-yil","1996-yil","2000-yil"], correct:[0]},
+
+  {q:"178. 1991-yilgi prezident saylovlarida Islom Karimov necha foiz ovoz oldi?",
+   options:["86 foiz","78 foiz","92 foiz"], correct:[0]},
+
+  {q:"179. O’zbekiston SSRda Prezidentlik lavozimi qachon joriy etildi?",
+   options:["1990-yil 24-mart","1991-yil 1-sentabr","1989-yil 15-may"], correct:[0]},
+
+  {q:"180. Islom Karimov qachon ilk bor umumxalq tomonidan Prezident etib saylandi?",
+   options:["1991-yil 29-dekabr","1992-yil 2-mart","1990-yil 20-iyun"], correct:[0]},
+
+  {q:"181. O’zbek tiliga davlat tili maqomini berish to’g’risidagi qonun qachon qabul qilindi?",
+   options:["1989-yil 21-oktabr","1991-yil 1-sentabr","1990-yil 20-iyun"], correct:[0]},
+
+  {q:"182. “Kolxozchi, sovxozchi xo’jaliklarga yer berish to’g’risida”gi qaror qachon qabul qilindi?",
+   options:["1989-yil 15-avgust","1990-yil 10-dekabr","1988-yil 5-may"], correct:[0]},
+
+  {q:"183. “G’aflatda yotgan xalqni uyg’otish uchun avvalo uning tarixini uyg’otish lozim” fikri kimga tegishli?",
+   options:["A. Avgustian","Abdurauf Fitrat","Behbudiy"], correct:[0]},
+
+  {q:"184. O’zbekiston tarixi telekanali qachon o’z faoliyatini boshladi?",
+   options:["2019-yil","2017-yil","2020-yil"], correct:[0]},
+
+  {q:"185. O’zbekistonning eng yangi tarixi fani qachondan boshlab oliy ta’lim o’quv dasturiga kiritildi?",
+   options:["2020-2021 o‘quv yilidan","2018-yildan","2015-yildan"], correct:[0]},
+
+  {q:"186. Shavkat Mirziyoyev ilk bor qachon BMT sessiyasida nutq so’zladi?",
+   options:["2017-yil 72-sessiya","2016-yil 70-sessiya","2018-yil 73-sessiya"], correct:[0]},
+
+  {q:"187. Islom Karimov nechanchi yilda Janubiy Koreyaga tashrif buyurdi?",
+   options:["1992-yil","1994-yil","1996-yil"], correct:[0]},
+
+  {q:"188. Farg’ona neftni qayta ishlash zavodi qaysi xorijiy korxona bilan hamkorlikda ishga tushirildi?",
+   options:["Mitsui (Yaponiya)","Samsung (Koreya)","ABB (AQSh)"], correct:[0]},
+
+  {q:"189. O’zbekistonda qaysi yil kichik biznes va xususiy tadbirkorlik yili deb e’lon qilindi?",
+   options:["2011-yil","2010-yil","2012-yil"], correct:[0]},
+
+  {q:"190. Kichik xususiylashtirish nechanchi yilda yakunlandi?",
+   options:["1994-yil","1993-yil","1995-yil"], correct:[0]},
+
+  {q:"191. Kichik xususiylashtirish natijasida qancha kvartira xususiylashtirildi?",
+   options:["1 milliondan ortiq","500 ming","2 million"], correct:[0]},
+
+  {q:"192. Mulkni davlat tasarrufidan chiqarish to’g’risidagi qonun qachon qabul qilindi?",
+   options:["1991-yil","1992-yil","1990-yil"], correct:[0]},
+
+  {q:"193. Kichik xususiylashtirish kimlarga imtiyozli berildi?",
+   options:["O’qituvchi, shifokor, urush faxriysi va ziyolilar","Faqat tadbirkorlarga","Faqat talabalar"], correct:[0]},
+
+  {q:"194. O’zbekistonda qaysi yil Inson manfaatlari yili deb e’lon qilindi?",
+   options:["1997-yil","1996-yil","1998-yil"], correct:[0]},
+
+  {q:"195. Fuqarolar necha yoshdan saylov huquqiga ega bo’ladi?",
+   options:["18 yosh","21 yosh","25 yosh"], correct:[0]},
+
+  {q:"196. Mustaqillik deklaratsiyasi qachon qabul qilindi?",
+   options:["1990-yil 20-iyun","1991-yil 31-avgust","1989-yil 21-oktabr"], correct:[0]},
+
+  {q:"197. Mustaqillik deklaratsiyasi necha moddadan iborat?",
+   options:["12 modda","15 modda","10 modda"], correct:[0]},
+
+  {q:"198. O’zbekiston Respublikasi davlat mustaqilligi asoslari to’g’risidagi qonun qachon qabul qilindi?",
+   options:["1991-yil","1990-yil","1992-yil"], correct:[0]},
+
+  {q:"199. O’zbekiston Respublikasi davlat mustaqilligi asoslari to’g’risidagi qonun necha moddadan iborat?",
+   options:["17 modda","12 modda","20 modda"], correct:[0]},
+
+  {q:"200. SSSRda paxtaning necha foizini O’zbekiston yetkazib bergan?",
+   options:["65 foiz","50 foiz","70 foiz"], correct:[0]},
+
+  {q:"201. Shavkat Mirziyoyev qachon Prezident etib saylandi?",
+   options:["2016-yil 4-dekabr","2017-yil 4-yanvar","2016-yil 1-noyabr"], correct:[0]},
+
+  {q:"202. Alisher Navoiyning 550 yilligi nechanchi yilda nishonlandi?",
+   options:["1991-yil","1992-yil","1990-yil"], correct:[0]},
+
+  {q:"203. Samarqand shahrining 2750 yilligi nechanchi yilda nishonlandi?",
+   options:["2007-yil","2005-yil","2009-yil"], correct:[0]},
+
+  {q:"204. Alisher Navoiy fors tilida qanday taxallus bilan ijod qilgan?",
+   options:["Foniy","Navoiy","Husayniy"], correct:[0]},
+
+  {q:"205. Zardushtiylik dinining muqaddas kitobi nima?",
+   options:["Avesto","Qur’on","Tavrot"], correct:[0]},
+
+  {q:"206. O’zbekistonda 2026-yil qanday yil deb nomlandi?",
+   options:["Mahallani rivojlantirish yili","Yoshlar yili","Ta’lim yili"], correct:[0]},
+
+  {q:"207. Ma’mun akademiyasining 1000 yilligi nechanchi yilda nishonlandi?",
+   options:["2006-yil","2005-yil","2007-yil"], correct:[0]},
+
+  {q:"208. Taraqqiyot strategiyasining 1-yo’nalishi nima?",
+   options:["Inson qadrini yuksaltirish","Iqtisodiy islohotlar","Xavfsizlikni kuchaytirish"], correct:[0]},
+
+  {q:"209. Taraqqiyot strategiyasining 2-yo’nalishi nima?",
+   options:["Qonun ustuvorligi","Ta’lim tizimi","Sanoat rivoji"], correct:[0]},
+
+  {q:"210. Taraqqiyot strategiyasining 3-yo’nalishi nima?",
+   options:["Iqtisodiy rivojlanish","Madaniyat","Sport"], correct:[0]},
+
+  {q:"211. Taraqqiyot strategiyasining 4-yo’nalishi nima?",
+   options:["Ijtimoiy siyosat","Qishloq xo‘jaligi","Transport"], correct:[0]},
+
+  {q:"212. Taraqqiyot strategiyasining 5-yo’nalishi nima?",
+   options:["Ma’naviy taraqqiyot","Savdo","Energetika"], correct:[0]},
+
+  {q:"213. Taraqqiyot strategiyasining 6-yo’nalishi nima?",
+ options:["Umumbashariy muammolar","Sport","Bank tizimi"], correct:[0]},
+
+{q:"214. Taraqqiyot strategiyasining 7-yo’nalishi nima deb nomlangan?",
+ options:[
+   "Mamlakat xavfsizligi va mudofaa salohiyatini kuchaytirish, ochiq va faol tashqi siyosat",
+   "Iqtisodiy o‘sishni tezlashtirish va investitsiyalarni oshirish",
+   "Ta’lim tizimini tubdan isloh qilish"
+ ],
+ correct:[0]},
+
+  {q:"215. Cho’lponning 100 yilligi qachon nishonlandi?",
+   options:["1997-yil","1995-yil","1999-yil"], correct:[0]
+  },
+
+  {q:"216. Amir Temur nechta bog’ qurdirgan?",
+   options:["10 ta","12 ta","15 ta"], correct:[1]
+  },
+
+  {q:"217. O’zbekiston 2030-strategiyasining 1-yo’nalishi nima deb nomlangan?",
+   options:[
+     "Har bir insonga o‘z salohiyatini ro‘yobga chiqarish uchun sharoit yaratish",
+     "Sanoatni rivojlantirish va eksportni oshirish",
+     "Qishloq xo‘jaligini to‘liq modernizatsiya qilish"
+   ],
+   correct:[0]
+  },
+
+  {q:"218. O’zbekiston 2030-strategiyasining ikkinchi yo’nalishi nima deb nomlangan?",
+   options:[
+     "Barqaror iqtisodiy o‘sish orqali aholi farovonligini ta’minlash",
+     "Madaniyat va sportni rivojlantirish",
+     "Ta’lim tizimini to‘liq o‘zgartirish"
+   ],
+   correct:[0]
+  },
+
+  {q:"219. O’zbekiston 2030-strategiyasining uchinchi yo’nalishi nima deb nomlangan?",
+   options:[
+     "Suv resurslarini tejash va atrof-muhitni muhofaza qilish",
+     "Transport tizimini kengaytirish",
+     "Bank tizimini modernizatsiya qilish"
+   ],
+   correct:[0]
+  },
+
+  {q:"220. O’zbekiston 2030-strategiyasining to’rtinchi yo’nalishi nima deb nomlangan?",
+   options:[
+     "Qonun ustuvorligini ta’minlash va xalq xizmatidagi davlat boshqaruvi",
+     "Qishloq xo‘jaligini rivojlantirish",
+     "Axborot texnologiyalarini rivojlantirish"
+   ],
+   correct:[0]
+  },
+
+  {q:"221. O’zbekiston 2030-strategiyasining beshinchi yo’nalishi nima deb nomlangan?",
+   options:[
+     "Xavfsiz va tinchliksevar davlat siyosatini davom ettirish",
+     "Ta’limni bepul qilish",
+     "Soliqlarni bekor qilish"
+   ],
+   correct:[0]
+  }
+];
+
+
+let allQuestions = questions;
+let selectedQuestions = [];
+
+let current = 0;
+let score = 0;
+
+let time = 4800;
+let timer;
+let paused = false;
+
+const container =
+document.getElementById("questions");
+
+function loadPart(part){
+
+    if(part===1)
+        selectedQuestions =
+        allQuestions.slice(0,50);
+
+    if(part===2)
+        selectedQuestions =
+        allQuestions.slice(50,100);
+
+    if(part===3)
+        selectedQuestions =
+        allQuestions.slice(100,150);
+
+    if(part===4)
+        selectedQuestions =
+        allQuestions.slice(150,195);
+
+    document.getElementById("menu")
+    .style.display="none";
+
+    document.getElementById("pauseBtn")
+    .style.display="inline-block";
+
+    document.getElementById("exitBtn")
+    .style.display="inline-block";
+
+    renderQuestions();
+
+    startTest();
+}
+
+function renderQuestions(){
+
+    container.innerHTML="";
+
+    selectedQuestions.forEach((q,i)=>{
+
+        let div =
+        document.createElement("div");
+
+        div.className="question";
+
+        let html=`<h3>${q.q}</h3>`;
+
+        q.options.forEach((opt,j)=>{
+
+            html+=`
+            <label>
+                <input type="radio"
+                name="q${i}"
+                value="${j}">
+                ${opt}
+            </label><br><br>
+            `;
+
+        });
+
+        div.innerHTML=html;
+
+        container.appendChild(div);
+
+    });
+
+}
+
+function startTest(){
+
+    current=0;
+    score=0;
+
+    document.getElementById("timer")
+    .style.display="block";
+
+    document
+    .querySelectorAll(".question")[0]
+    .style.display="block";
+
+    startTimer();
+
+}
+
+function startTimer(){
+
+    timer=setInterval(()=>{
+
+        time--;
+
+        let min =
+        Math.floor(time/60);
+
+        let sec =
+        time%60;
+
+        document
+        .getElementById("timer")
+        .innerText=
+        `${min}:${sec<10?"0"+sec:sec}`;
+
+        if(time<=0){
+
+            clearInterval(timer);
+
+            finishTest();
+
+        }
+
+    },1000);
+
+}
+
+document
+.getElementById("pauseBtn")
+.onclick=()=>{
+
+    if(!paused){
+
+        clearInterval(timer);
+
+        paused=true;
+
+        pauseBtn.innerText=
+        "▶ Davom ettirish";
+
+    }else{
+
+        startTimer();
+
+        paused=false;
+
+        pauseBtn.innerText=
+        "⏸ To'xtatish";
+
+    }
+
+};
+
+document
+.getElementById("exitBtn")
+.onclick=()=>{
+
+    if(confirm("Testdan chiqilsinmi?")){
+
+        location.reload();
+
+    }
+
+};
+
+container.addEventListener(
+"change",(e)=>{
+
+    let qDivs=
+    document.querySelectorAll(".question");
+
+    let index=
+    [...qDivs].indexOf(
+    e.target.closest(".question"));
+
+    let selected=
+    Number(e.target.value);
+
+    let feedback=
+    document.getElementById(
+    "feedback");
+
+    if(
+      selected===
+      selectedQuestions[index]
+      .correct[0]
+    ){
+
+        score++;
+
+        feedback.innerHTML=
+        '<span class="correct">✅ To‘g‘ri</span>';
+
+    }else{
+
+        feedback.innerHTML=
+        '<span class="wrong">❌ Noto‘g‘ri</span>';
+
+    }
+
+    setTimeout(()=>{
+
+        feedback.innerHTML="";
+
+        next();
+
+    },700);
+
+});
+
+function next(){
+
+    let qDivs=
+    document.querySelectorAll(".question");
+
+    qDivs[current]
+    .style.display="none";
+
+    current++;
+
+    if(current<qDivs.length){
+
+        qDivs[current]
+        .style.display="block";
+
+    }else{
+
+        finishTest();
+
+    }
+
+}
+
+function finishTest(){
+
+    clearInterval(timer);
+
+    let total=
+    selectedQuestions.length;
+
+    let percent=
+    Math.round(
+    score*100/total);
+
+    let grade="";
+
+    if(percent>=28)
+        grade="O'tdingiz";
+    else if(percent<=28)
+        grade="Yiqildiz";
+
+    document
+    .getElementById("questions")
+    .innerHTML="";
+
+    document
+    .getElementById("feedback")
+    .innerHTML="";
+
+    document
+    .getElementById("result")
+    .innerHTML=`
+
+    <h2>Test tugadi</h2>
+
+    <p>Ball:
+    ${score}/${total}</p>
+
+    <p>Foiz:
+    ${percent}%</p>
+
+    <p>Baho:
+    <b>${grade}</b></p>
+
+    <button onclick="location.reload()">
+    🔄 Qayta boshlash
+    </button>
+
+    `;
+}
+
+</script>
+
+</body>
+</html>
