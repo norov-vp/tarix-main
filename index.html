@@ -6,112 +6,51 @@
 <title>Interaktiv Test</title>
 
 <style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f2f2f2;
-    margin:0;
-    padding:20px;
-}
-
-.container{
-    max-width:900px;
-    margin:auto;
-    background:#fff;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,0,0,.2);
-}
-
-button{
-    padding:10px 15px;
-    margin:5px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.start{
-    background:#007bff;
-    color:white;
-}
-
-.exit{
-    background:red;
-    color:white;
-}
-
-.pause{
-    background:orange;
-    color:white;
-}
-
-.question{
-    display:none;
-    margin-top:20px;
-}
-
-#timer{
-    font-size:22px;
-    color:red;
-    font-weight:bold;
-    margin:15px 0;
-    display:none;
-}
-
-.correct{
-    color:green;
-    font-weight:bold;
-}
-
-.wrong{
-    color:red;
-    font-weight:bold;
-}
-
-#feedback{
-    font-size:20px;
-    margin:10px 0;
-}
+body{font-family:Arial;background:#f2f2f2;margin:0;padding:20px}
+.container{max-width:900px;margin:auto;background:#fff;padding:20px;border-radius:15px;box-shadow:0 0 15px rgba(0,0,0,.2)}
+button{padding:10px 15px;margin:5px;border:none;border-radius:8px;cursor:pointer}
+.start{background:#007bff;color:#fff}
+.exit{background:red;color:#fff}
+.pause{background:orange;color:#fff}
+.question{display:none;margin-top:20px}
+#timer{font-size:22px;color:red;font-weight:bold;display:none;margin:10px 0}
+.correct{color:green}
+.wrong{color:red}
 </style>
 </head>
+
 <body>
 
 <div class="container">
 
-<h2>Interaktiv Test</h2>
+<h2>INTERAKTIV TEST</h2>
 
 <div id="menu">
-    <button class="start" onclick="loadPart(1)">Test 1 (1-50)</button>
-    <button class="start" onclick="loadPart(2)">Test 2 (51-100)</button>
-    <button class="start" onclick="loadPart(3)">Test 3 (101-150)</button>
-    <button class="start" onclick="loadPart(4)">Test 4 (151-195)</button>
+<button class="start" onclick="loadPart(1)">Test 1 (1–44)</button>
+<button class="start" onclick="loadPart(2)">Test 2 (45–88)</button>
+<button class="start" onclick="loadPart(3)">Test 3 (89–132)</button>
+<button class="start" onclick="loadPart(4)">Test 4 (133–176)</button>
+<button class="start" onclick="loadPart(5)">Test 5 (177–221)</button>
 </div>
 
-<div>
-    <button id="pauseBtn" class="pause" style="display:none">
-        ⏸ To'xtatish
-    </button>
-
-    <button id="exitBtn" class="exit" style="display:none">
-        ❌ Chiqish
-    </button>
-</div>
+<button id="pauseBtn" class="pause" style="display:none">⏸ To‘xtatish</button>
+<button id="exitBtn" class="exit" style="display:none">❌ Chiqish</button>
 
 <div id="timer">80:00</div>
-
 <div id="feedback"></div>
-
 <div id="questions"></div>
-
 <div id="result"></div>
 
 </div>
 
 <script>
 
-/* BU YERGA 195 TA SAVOLNI JOYLAYSIZ */
-
+/* =======================
+   221 TA SAVOL
+   (SENIKI TO‘LIQ BO‘LADI)
+======================= */
 const questions = [
+
 
   {q:"1. Islom Karimovning “O’zbekiston mustaqillikka erishish ostonasida” asari nechanchi yillar voqealarini o’z ichiga oladi?", options:["1985-1988-yillar","1989-1992-yillar","1991-1995-yillar"], correct:[1]},
   {q:"2. Milliy mustaqillikning ikkinchi davri hisoblangan Milliy yuksalish davri nechanchi boshlanadi?", options:["2015-yildan","2017-yildan","2019-yildan"], correct:[1]},
@@ -151,8 +90,7 @@ const questions = [
   {q:"31. 2018 diplomatik davlatlar soni?", options:["120","134","150"], correct:[1]},
   {q:"32. SHHT nomi qachon?", options:["2000","2001","2002"], correct:[1]},
   {q:"33. 2019 O‘zbekiston yili qayerda?", options:["Qozog‘iston","Rossiya","Turkiya"], correct:[0]},
-
-  {q:"45. Quyidagi asarlardan qaysi biri Ahmad Al Farg’oniy qalamiga mansub?", options:["Samoviy harakatlar va ilmu nujum","Al-jabr","Qutadg’u bilig"], correct:[0]},
+ {q:"45. Quyidagi asarlardan qaysi biri Ahmad Al Farg’oniy qalamiga mansub?", options:["Samoviy harakatlar va ilmu nujum","Al-jabr","Qutadg’u bilig"], correct:[0]},
   {q:"46. Quyidagi voqealardan qaysi biri 2020-yilda sodir bo‘lgan?", options:["Ta’lim to’g’risidagi yangi qonun","Konstitutsiya qabul qilindi","SHHT tashkil etildi"], correct:[0]},
   {q:"47. O’zbekiston qachon BMTga a’zo bo‘ldi?", options:["1991-yil 2-mart","1992-yil 2-mart","1993-yil 2-mart"], correct:[1]},
   {q:"48. Qaysi biri Farg’ona voqeasining sababiga kirmaydi?", options:["Ijtimoiy muammolar","Orol fojeasi","Mehnat nizolari"], correct:[1]},
@@ -187,8 +125,7 @@ const questions = [
   {q:"72. Islom universiteti qayerda ochilgan?", options:["Samarqand","Toshkent","Buxoro"], correct:[1]},
   {q:"73. Taraqqiyot strategiyasi nechta yo‘nalishdan iborat?", options:["5 va 70","7 va 100","8 va 120"], correct:[1]},
   {q:"74. Qaysi biri siyosiy partiyaga kirmaydi?", options:["Diniy tashkilot tuzish","Saylovlarda qatnashish","Qonun ishlab chiqish"], correct:[0]},
-
-  {q:"75. Sherdor va Tillakori kim tomonidan qurilgan?", options:["Yalangto‘sh Bahodir","Amir Temur","Ulug‘bek"], correct:[0]},
+{q:"75. Sherdor va Tillakori kim tomonidan qurilgan?", options:["Yalangto‘sh Bahodir","Amir Temur","Ulug‘bek"], correct:[0]},
   {q:"76. O‘qituvchilar oyligi necha barobar oshdi?", options:["2 barobar","2,5 barobar","3 barobar"], correct:[1]},
   {q:"77. Islom Karimov haykali qayerlarda o‘rnatilgan?", options:["Toshkent, Samarqand, Qarshi","Toshkent, Buxoro","Farg‘ona, Andijon"], correct:[0]},
   {q:"78. Amir Temur barpo etmagan bog‘ qaysi?", options:["Bog‘i Dilkusho","Xo‘ja Ilg‘or bog‘i","Bog‘i Chinor"], correct:[1]},
@@ -222,8 +159,7 @@ const questions = [
   {q:"101. Diniy tashkilotlar soni?", options:["1000 dan ortiq","2200 dan ortiq","3000 dan ortiq"], correct:[1]},
   {q:"102. Markaziy Osiyodagi ilk islom universiteti?", options:["1999 Toshkent","2000 Samarqand","1998 Buxoro"], correct:[0]},
   {q:"103. Plyonka ostiga ekish qayerda boshlangan?", options:["Andijon","Farg‘ona","Namangan"], correct:[0]},
-
-  {q:"104. O‘qituvchilar maoshi oshishi?", options:["2 barobar","2,5 barobar","3 barobar"], correct:[1]},
+ {q:"104. O‘qituvchilar maoshi oshishi?", options:["2 barobar","2,5 barobar","3 barobar"], correct:[1]},
   {q:"105. Shahidlar xotirasi qayerda?", options:["Toshkent","Samarqand","Buxoro"], correct:[0]},
   {q:"106. 1996-yilda avtomobil ishlab chiqaruvchi o‘rin?", options:["25-o‘rin","28-o‘rin","30-o‘rin"], correct:[1]},
   {q:"107. 2021-yil nomi?", options:["Yoshlar yili","Inson qadrini ulug‘lash yili","Taraqqiyot yili"], correct:[1]},
@@ -266,8 +202,7 @@ const questions = [
   {q:"137. 2-tamoyil?", options:["Davlat bosh islohotchi","Erkinlik","Madaniyat"], correct:[0]},
   {q:"138. 3-tamoyil?", options:["Qonun ustuvorligi","Sport","Ta’lim"], correct:[0]},
   {q:"139. 4-tamoyil?", options:["Kuchli ijtimoiy siyosat","Siyosat","Fan"], correct:[0]},
-
-  {q:"140. 5-tamoyil?", options:["Bozor iqtisodiyotiga o‘tish","Transport","Savdo"], correct:[0]},
+ {q:"140. 5-tamoyil?", options:["Bozor iqtisodiyotiga o‘tish","Transport","Savdo"], correct:[0]},
   {q:"141. 1-ustuvor yo‘nalish?", options:["Davlat va jamiyat qurilishi","Madaniyat","Sport"], correct:[0]},
   {q:"142. 2-ustuvor yo‘nalish?", options:["Qonun ustuvorligi","Oila","San’at"], correct:[0]},
   {q:"143. 3-ustuvor yo‘nalish?", options:["Iqtisodiy rivojlanish","Kitob","Televideniye"], correct:[0]},
@@ -321,8 +256,7 @@ const questions = [
 
   {q:"176. Islom Karimovning “O’zbekiston o’z istiqlol va taraqqiyot yo’li” asari nechanchi yilda nashr etildi?",
    options:["1992-yil","1990-yil","1994-yil"], correct:[0]},
-
-  {q:"177. Islom Karimovning “Tarixiy xotirasiz kelajak yo’q” asari nechanchi yilda nashr etildi?",
+ {q:"177. Islom Karimovning “Tarixiy xotirasiz kelajak yo’q” asari nechanchi yilda nashr etildi?",
    options:["1998-yil","1996-yil","2000-yil"], correct:[0]},
 
   {q:"178. 1991-yilgi prezident saylovlarida Islom Karimov necha foiz ovoz oldi?",
@@ -396,8 +330,7 @@ const questions = [
 
   {q:"201. Shavkat Mirziyoyev qachon Prezident etib saylandi?",
    options:["2016-yil 4-dekabr","2017-yil 4-yanvar","2016-yil 1-noyabr"], correct:[0]},
-
-  {q:"202. Alisher Navoiyning 550 yilligi nechanchi yilda nishonlandi?",
+{q:"202. Alisher Navoiyning 550 yilligi nechanchi yilda nishonlandi?",
    options:["1991-yil","1992-yil","1990-yil"], correct:[0]},
 
   {q:"203. Samarqand shahrining 2750 yilligi nechanchi yilda nishonlandi?",
@@ -496,284 +429,136 @@ const questions = [
 ];
 
 
-let allQuestions = questions;
-let selectedQuestions = [];
+/* =======================
+   LOGIKA
+======================= */
 
+let selectedQuestions = [];
 let current = 0;
 let score = 0;
-
-let time = 4800;
 let timer;
+let time = 4800;
+let answered = [];
 let paused = false;
 
-const container =
-document.getElementById("questions");
+const container = document.getElementById("questions");
 
+/* ===== 5 BO‘LIM ===== */
 function loadPart(part){
 
-    if(part===1)
-        selectedQuestions =
-        allQuestions.slice(1,70);
+    if(part === 1) selectedQuestions = questions.slice(0,44);
+    if(part === 2) selectedQuestions = questions.slice(44,88);
+    if(part === 3) selectedQuestions = questions.slice(88,132);
+    if(part === 4) selectedQuestions = questions.slice(132,176);
+    if(part === 5) selectedQuestions = questions.slice(176,221);
 
-    if(part===2)
-        selectedQuestions =
-        allQuestions.slice(70,120);
+    current = 0;
+    score = 0;
+    answered = [];
+    time = 4800;
 
-    if(part===3)
-        selectedQuestions =
-        allQuestions.slice(120,170);
+    document.getElementById("menu").style.display="none";
+    document.getElementById("pauseBtn").style.display="inline-block";
+    document.getElementById("exitBtn").style.display="inline-block";
 
-    if(part===4)
-        selectedQuestions =
-        allQuestions.slice(170,221);
-        
-    
-
-
-    document.getElementById("menu")
-    .style.display="none";
-
-    document.getElementById("pauseBtn")
-    .style.display="inline-block";
-
-    document.getElementById("exitBtn")
-    .style.display="inline-block";
-
-    renderQuestions();
-
-    startTest();
+    render();
+    start();
 }
 
-function renderQuestions(){
+/* ===== RENDER ===== */
+function render(){
+    container.innerHTML="";
+    selectedQuestions.forEach((q,i)=>{
+        let div = document.createElement("div");
+        div.className="question";
+
+        let html = `<h3>${q.q}</h3>`;
+
+        q.options.forEach((o,j)=>{
+            html += `
+            <label>
+            <input type="radio" name="q${i}" value="${j}">
+            ${o}
+            </label><br><br>`;
+        });
+
+        div.innerHTML = html;
+        container.appendChild(div);
+    });
+}
+
+/* ===== START ===== */
+function start(){
+    document.getElementById("timer").style.display="block";
+    document.querySelectorAll(".question")[0].style.display="block";
+
+    clearInterval(timer);
+    timer = setInterval(()=>{
+        time--;
+        let m = Math.floor(time/60);
+        let s = time%60;
+
+        document.getElementById("timer").innerText =
+        `${m}:${s<10?"0"+s:s}`;
+
+        if(time<=0) finish();
+    },1000);
+}
+
+/* ===== ANSWER ===== */
+container.addEventListener("change",(e)=>{
+    let divs = document.querySelectorAll(".question");
+    let index = [...divs].indexOf(e.target.closest(".question"));
+
+    if(answered[index]) return;
+
+    let val = Number(e.target.value);
+
+    if(val === selectedQuestions[index].correct[0]){
+        score++;
+        feedback.innerHTML = "✅ To‘g‘ri";
+    }else{
+        feedback.innerHTML = "❌ Noto‘g‘ri";
+    }
+
+    answered[index]=true;
+
+    setTimeout(()=>{
+        feedback.innerHTML="";
+        next();
+    },500);
+});
+
+/* ===== NEXT ===== */
+function next(){
+    let divs = document.querySelectorAll(".question");
+    divs[current].style.display="none";
+    current++;
+
+    if(current<divs.length){
+        divs[current].style.display="block";
+    }else{
+        finish();
+    }
+}
+
+/* ===== FINISH ===== */
+function finish(){
+    clearInterval(timer);
+
+    let total = selectedQuestions.length;
+    let percent = Math.round(score*100/total);
+
+    let grade = percent>=50 ? "O‘tdingiz" : "Yiqildingiz";
 
     container.innerHTML="";
 
-    selectedQuestions.forEach((q,i)=>{
-
-        let div =
-        document.createElement("div");
-
-        div.className="question";
-
-        let html=`<h3>${q.q}</h3>`;
-
-        q.options.forEach((opt,j)=>{
-
-            html+=`
-            <label>
-                <input type="radio"
-                name="q${i}"
-                value="${j}">
-                ${opt}
-            </label><br><br>
-            `;
-
-        });
-
-        div.innerHTML=html;
-
-        container.appendChild(div);
-
-    });
-
-}
-
-function startTest(){
-
-    current=0;
-    score=0;
-
-    document.getElementById("timer")
-    .style.display="block";
-
-    document
-    .querySelectorAll(".question")[0]
-    .style.display="block";
-
-    startTimer();
-
-}
-
-function startTimer(){
-
-    timer=setInterval(()=>{
-
-        time--;
-
-        let min =
-        Math.floor(time/60);
-
-        let sec =
-        time%60;
-
-        document
-        .getElementById("timer")
-        .innerText=
-        `${min}:${sec<10?"0"+sec:sec}`;
-
-        if(time<=0){
-
-            clearInterval(timer);
-
-            finishTest();
-
-        }
-
-    },1000);
-
-}
-
-document
-.getElementById("pauseBtn")
-.onclick=()=>{
-
-    if(!paused){
-
-        clearInterval(timer);
-
-        paused=true;
-
-        pauseBtn.innerText=
-        "▶ Davom ettirish";
-
-    }else{
-
-        startTimer();
-
-        paused=false;
-
-        pauseBtn.innerText=
-        "⏸ To'xtatish";
-
-    }
-
-};
-
-document
-.getElementById("exitBtn")
-.onclick=()=>{
-
-    if(confirm("Testdan chiqilsinmi?")){
-
-        location.reload();
-
-    }
-
-};
-
-container.addEventListener(
-"change",(e)=>{
-
-    let qDivs=
-    document.querySelectorAll(".question");
-
-    let index=
-    [...qDivs].indexOf(
-    e.target.closest(".question"));
-
-    let selected=
-    Number(e.target.value);
-
-    let feedback=
-    document.getElementById(
-    "feedback");
-
-    if(
-      selected===
-      selectedQuestions[index]
-      .correct[0]
-    ){
-
-        score++;
-
-        feedback.innerHTML=
-        '<span class="correct">✅ To‘g‘ri</span>';
-
-    }else{
-
-        feedback.innerHTML=
-        '<span class="wrong">❌ Noto‘g‘ri</span>';
-
-    }
-
-    setTimeout(()=>{
-
-        feedback.innerHTML="";
-
-        next();
-
-    },700);
-
-});
-
-function next(){
-
-    let qDivs=
-    document.querySelectorAll(".question");
-
-    qDivs[current]
-    .style.display="none";
-
-    current++;
-
-    if(current<qDivs.length){
-
-        qDivs[current]
-        .style.display="block";
-
-    }else{
-
-        finishTest();
-
-    }
-
-}
-
-function finishTest(){
-
-    clearInterval(timer);
-
-    let total=
-    selectedQuestions.length;
-
-    let percent=
-    Math.round(
-    score*100/total);
-
-    let grade="";
-
-    if(percent>=28)
-        grade="O'tdingiz";
-    else if(percent<=28)
-        grade="Yiqildiz";
-
-    document
-    .getElementById("questions")
-    .innerHTML="";
-
-    document
-    .getElementById("feedback")
-    .innerHTML="";
-
-    document
-    .getElementById("result")
-    .innerHTML=`
-
-    <h2>Test tugadi</h2>
-
-    <p>Ball:
-    ${score}/${total}</p>
-
-    <p>Foiz:
-    ${percent}%</p>
-
-    <p>Baho:
-    <b>${grade}</b></p>
-
-    <button onclick="location.reload()">
-    🔄 Qayta boshlash
-    </button>
-
+    document.getElementById("result").innerHTML=`
+        <h2>Test tugadi</h2>
+        <p>Ball: ${score}/${total}</p>
+        <p>Foiz: ${percent}%</p>
+        <p><b>${grade}</b></p>
+        <button onclick="location.reload()">Qayta boshlash</button>
     `;
 }
 
